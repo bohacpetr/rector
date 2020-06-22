@@ -1,4 +1,4 @@
-# All 526 Rectors Overview
+# All 527 Rectors Overview
 
 - [Projects](#projects)
 - [General](#general)
@@ -54,7 +54,7 @@
 - [Php72](#php72) (11)
 - [Php73](#php73) (10)
 - [Php74](#php74) (15)
-- [Php80](#php80) (10)
+- [Php80](#php80) (11)
 - [PhpDeglobalize](#phpdeglobalize) (1)
 - [PhpSpecToPHPUnit](#phpspectophpunit) (7)
 - [Polyfill](#polyfill) (2)
@@ -1039,7 +1039,7 @@ Complete missing 3rd argument in case `is_a()` function in case of strings
 - class: [`Rector\CodeQuality\Rector\Concat\JoinStringConcatRector`](/../master/rules/code-quality/src/Rector/Concat/JoinStringConcatRector.php)
 - [test fixtures](/../master/rules/code-quality/tests/Rector/Concat/JoinStringConcatRector/Fixture)
 
-Joins concat of 2 strings
+Joins concat of 2 strings, unless the lenght is too long
 
 ```diff
  class SomeClass
@@ -4987,7 +4987,8 @@ Rename property and method param to match its type
 Rename variable to match get method name
 
 ```diff
- class SomeClass {
+ class SomeClass
+ {
      public function run()
      {
 -        $a = $this->getRunner();
@@ -8869,6 +8870,47 @@ Change annotation to attribute
 
 <br><br>
 
+### `ChangeSwitchToMatchRector`
+
+- class: [`Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector`](/../master/rules/php80/src/Rector/Switch_/ChangeSwitchToMatchRector.php)
+- [test fixtures](/../master/rules/php80/tests/Rector/Switch_/ChangeSwitchToMatchRector/Fixture)
+
+Change `switch()` to `match()`
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        $statement = switch ($this->lexer->lookahead['type']) {
+-            case Lexer::T_SELECT:
+-                $statement = $this->SelectStatement();
+-                break;
+-
+-            case Lexer::T_UPDATE:
+-                $statement = $this->UpdateStatement();
+-                break;
+-
+-            case Lexer::T_DELETE:
+-                $statement = $this->DeleteStatement();
+-                break;
+-
+-            default:
+-                $this->syntaxError('SELECT, UPDATE or DELETE');
+-                break;
+-        }
++        $statement = match ($this->lexer->lookahead['type']) {
++            Lexer::T_SELECT => $this->SelectStatement(),
++            Lexer::T_UPDATE => $this->UpdateStatement(),
++            Lexer::T_DELETE => $this->DeleteStatement(),
++            default => $this->syntaxError('SELECT, UPDATE or DELETE'),
++        };
+     }
+ }
+```
+
+<br><br>
+
 ### `ClassOnObjectRector`
 
 - class: [`Rector\Php80\Rector\FuncCall\ClassOnObjectRector`](/../master/rules/php80/src/Rector/FuncCall/ClassOnObjectRector.php)
@@ -8894,7 +8936,7 @@ Change get_class($object) to faster `$object::class`
 - class: [`Rector\Php80\Rector\Ternary\GetDebugTypeRector`](/../master/rules/php80/src/Rector/Ternary/GetDebugTypeRector.php)
 - [test fixtures](/../master/rules/php80/tests/Rector/Ternary/GetDebugTypeRector/Fixture)
 
-Change ternary type resolve to `get_debug_type()`
+Change ternary type `resolve` to `get_debug_type()`
 
 ```diff
  class SomeClass
